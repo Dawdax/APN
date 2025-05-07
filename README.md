@@ -39,9 +39,43 @@ fprintf('Valor aproximado Y(%.15f)= %.15f\n',b,double(Y(n+1)));
 fprintf('Valor exacto F(%.15f)= %.15f\n',b,double(exacta));
 fprintf('Error= %e\n', double(error));
 
+OTRA FORMA:
+syms t y;
+disp('Metodo de Runge kutta');
+f=input('Ingrese la función: dy/dt: ');
+intervalo=input('Ingrese el intervalo [a b]: ');
+y0=input('Ingrese el punto inicial y0: ');
+h=input('Ingrese el valor de h: ');
+F=input('Ingrese la solución de la ecuación diferencial: ');
+
+a=intervalo(1);
+b=intervalo(2);
+T=[a:h:b];
+n=length(T)-1;
+Y(1)=y0;
+fprintf('ti=%.15f\n',T(1))
+fprintf('Y(t)=%15f\n', Y(1))
+exacta=double(subs(F,t,T(1)));
+fprintf('F(t)=%.15f\n',exacta)
+fprintf('Error=%e\n', double(abs(exacta - Y(1))))
+
+for i=1:n
+    fprintf('------------------------\n')
+    fprintf('ti=%.15f\n',T(i+1))
+    k1=double(subs(f,{t y},{T(i),Y(i)}))
+    k2=double(subs(f,{t y},{T(i)+b1*h, Y(i)+c11*h*k1}))
+    k3=double(subs(f,{t y},{T(i)+b2*h, Y(i)+c21*h*k1+c22*h*k2}))
+    k4=double(subs(f,{t y}, {T(i)+b3*h, Y(i)+c31*h*k1+c32*h*k2+c33*h*k3}))
+    Y(i+1)=h*(a1*k1+a2*k2+a3*k3+a4*k4)
+    exacta=double(subs(F,T(i+1)));
+    error=double(abs(exacta-Y(i+1)))
+    fprintf('F(t)=%.15f\n',exacta)
+    fprintf('Error=%e\n',error )
+end
+    
 
 
-Uso del dsolve para ED de orden superior
+USO DISOLVE ORDEN SUPERIOR
 >> syms t y;
 
 >> exacta=dsolve('D3y+2*D2y-Dy-2*y=t*exp(t)','y(0)=2','Dy(0)=1','D2y(0)=1')
@@ -63,7 +97,7 @@ ans =
 >> [T' double(subs(exacta,T))' double(subs(diff(exacta),T))' double(subs(diff(exacta,2),T))' ]
 
 
-Uso del dsolve para resolver sistemas de ecuaciones diferenciales
+USO DISOLVE ECUACIONES DIFERENCIALES
 >> syms t x y;
 
 >> A=24*exp(-2*t)-27*exp(-t)+4*cos(t)-5*sin(t);
